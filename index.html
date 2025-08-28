@@ -15,7 +15,7 @@ crossorigin="anonymous"></script>
 <style>
 body { font-family: 'Segoe UI', 'Apple SD Gothic Neo', Arial, sans-serif; background:#fdf6fb; }
 .container { max-width: 800px; margin: 30px auto; background:#fff7f0; padding:20px; border-radius:12px; box-shadow:0 2px 16px rgba(211,183,255,0.2);}
-h1 { text-align:center; color:#8c8cff; }
+h1, h2 { text-align:center; color:#8c8cff; }
 input, select { padding:6px 10px; margin:5px; border-radius:6px; border:1px solid #ccc; }
 button { padding:8px 14px; margin:5px; border:none; border-radius:6px; background:#8c8cff; color:#fff; cursor:pointer; }
 button:hover { background:#6f6fef; }
@@ -47,26 +47,39 @@ th, td { padding:6px 10px; text-align:center; }
   <label>투자 기간: </label>
   <input type="number" id="period" value="12">
   <select id="periodType">
-    <option value="month">개월</option>
-    <option value="year">년</option>
+    <option value="month">개월 (Months)</option>
+    <option value="year">년 (Years)</option>
   </select><br>
   <label>수익률: </label><input type="number" id="rate" value="0.15" step="0.01">
   <select id="rateType">
-    <option value="yearly">연 수익률</option>
-    <option value="monthly">월 수익률</option>
+    <option value="yearly">연간 수익률 (Yearly)</option>
+    <option value="monthly">월간 수익률 (Monthly)</option>
   </select><br>
   <label>리밸런싱 비율(%): </label><input type="number" id="rebalance" value="15" min="0" max="100"><br>
   <button onclick="calculate()">계산</button>
 
   <h2>결과 요약</h2>
   <table id="summaryTable">
-    <tr><th>총 투자금</th><th>총 자산</th><th>주식 평가금액</th><th>현금</th><th>누적 수익</th></tr>
+    <tr>
+      <th>총 투자금 (Total Invested)</th>
+      <th>총 자산 (Total Assets)</th>
+      <th>주식 총액 (Stock Value)</th>
+      <th>현금 (Cash)</th>
+      <th>누적 수익 (Cumulative Profit)</th>
+    </tr>
     <tr><td colspan="5">계산 후 결과가 표시됩니다</td></tr>
   </table>
 
   <h2>월/년별 상세 기록</h2>
   <table id="detailTable">
-    <tr><th>기간</th><th>투자금</th><th>리밸런싱 후 주식</th><th>현금</th><th>총자산</th><th>누적 수익</th></tr>
+    <tr>
+      <th>기간</th>
+      <th>총 투자금 (Total Invested)</th>
+      <th>리밸런싱 후 주식 (Stock Value)</th>
+      <th>현금 (Cash)</th>
+      <th>총 자산 (Total Assets)</th>
+      <th>누적 수익 (Cumulative Profit)</th>
+    </tr>
   </table>
 
   <div class="chart-container">
@@ -84,7 +97,7 @@ function calculate(){
   const rateType = document.getElementById('rateType').value;
   const rebalancePct = parseFloat(document.getElementById('rebalance').value)/100;
 
-  // 월 단위로 통일
+  // 기간을 월 단위로 통일
   if(periodType=='year') period*=12;
   if(rateType=='yearly') rate=Math.pow(1+rate,1/12)-1;
 
@@ -96,11 +109,11 @@ function calculate(){
   let stockData=[], cashData=[], totalData=[];
 
   for(let i=1;i<=period;i++){
-    // 월별 투자 추가
+    // 월별 투자금 추가
     stock += monthly;
     totalInvested += monthly;
 
-    // 월 수익
+    // 월 수익 계산
     let profit = stock*rate;
 
     // 리밸런싱
@@ -111,8 +124,15 @@ function calculate(){
     let total = stock + cash;
     let cumulativeProfit = total - totalInvested;
 
-    // 기록
-    history.push({period:i, invested:totalInvested, stock:Math.round(stock), cash:Math.round(cash), total:Math.round(total), profit:Math.round(cumulativeProfit)});
+    // 기록 저장
+    history.push({
+      period:i,
+      invested:totalInvested,
+      stock:Math.round(stock),
+      cash:Math.round(cash),
+      total:Math.round(total),
+      profit:Math.round(cumulativeProfit)
+    });
     labels.push(i);
     stockData.push(Math.round(stock));
     cashData.push(Math.round(cash));
@@ -128,7 +148,13 @@ function calculate(){
     <td>${summary.cash.toLocaleString()}</td>
     <td>${summary.profit.toLocaleString()}</td>
   </tr>`;
-  document.getElementById('summaryTable').innerHTML=`<tr><th>총 투자금</th><th>총 자산</th><th>주식 평가금액</th><th>현금</th><th>누적 수익</th></tr>`+summaryHTML;
+  document.getElementById('summaryTable').innerHTML=`<tr>
+    <th>총 투자금 (Total Invested)</th>
+    <th>총 자산 (Total Assets)</th>
+    <th>주식 총액 (Stock Value)</th>
+    <th>현금 (Cash)</th>
+    <th>누적 수익 (Cumulative Profit)</th>
+  </tr>`+summaryHTML;
 
   // 상세 기록 테이블
   let detailHTML=history.map(h=>`<tr>
@@ -139,7 +165,14 @@ function calculate(){
     <td>${h.total.toLocaleString()}</td>
     <td>${h.profit.toLocaleString()}</td>
   </tr>`).join('');
-  document.getElementById('detailTable').innerHTML=`<tr><th>기간</th><th>투자금</th><th>리밸런싱 후 주식</th><th>현금</th><th>총자산</th><th>누적 수익</th></tr>`+detailHTML;
+  document.getElementById('detailTable').innerHTML=`<tr>
+    <th>기간</th>
+    <th>총 투자금 (Total Invested)</th>
+    <th>리밸런싱 후 주식 (Stock Value)</th>
+    <th>현금 (Cash)</th>
+    <th>총 자산 (Total Assets)</th>
+    <th>누적 수익 (Cumulative Profit)</th>
+  </tr>`+detailHTML;
 
   // 그래프
   const ctx=document.getElementById('assetChart').getContext('2d');
@@ -149,9 +182,9 @@ function calculate(){
     data:{
       labels:labels,
       datasets:[
-        {label:'총 자산', data:totalData, borderColor:'#8c8cff', fill:false},
-        {label:'주식 평가금액', data:stockData, borderColor:'#52a1ff', fill:false},
-        {label:'현금', data:cashData, borderColor:'#ffa152', fill:false}
+        {label:'총 자산 (Total Assets)', data:totalData, borderColor:'#8c8cff', fill:false},
+        {label:'주식 총액 (Stock Value)', data:stockData, borderColor:'#52a1ff', fill:false},
+        {label:'현금 (Cash)', data:cashData, borderColor:'#ffa152', fill:false}
       ]
     },
     options:{responsive:true, plugins:{legend:{position:'top'}}}
