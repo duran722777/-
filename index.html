@@ -2,76 +2,28 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>초강력 복리 투자 계산기</title>
+  <title>주식 복리 계산기</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- 구글 애드센스 광고 -->
+  <!-- 구글 애드센스 -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4634078773523032"
      crossorigin="anonymous"></script>
   <style>
-    body {
-      font-family: 'Segoe UI', 'Apple SD Gothic Neo', Arial, sans-serif;
-      background: #fdf6fb;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 360px;
-      margin: 30px auto;
-      background: #fff7f0;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 2px 16px rgba(211, 183, 255, 0.15);
-    }
-    h1 {
-      text-align: center;
-      color: #8c8cff;
-      margin-bottom: 20px;
-      font-size: 1.6em;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-      margin-bottom: 5px;
-      font-weight: 600;
-      color: #5e5e7a;
-    }
-    input[type=number], select {
-      width: 100%;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-      box-sizing: border-box;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 10px;
-      background: #8c8cff;
-      color: #fff;
-      font-size: 1em;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    button:hover { background: #6f6fff; }
-    .result {
-      margin-top: 20px;
-      padding: 10px;
-      background: #f2fefd;
-      border-radius: 10px;
-      box-shadow: 0 0.5px 2px rgba(133,199,209,0.07);
-    }
-    canvas {
-      max-width: 100%;
-      margin-top: 20px;
-    }
-    .ads { margin: 20px auto; text-align: center; }
+    body { background: #fdf6fb; font-family: 'Segoe UI', 'Apple SD Gothic Neo', Arial, sans-serif; }
+    .container { max-width: 400px; margin: 40px auto; background: #fff7f0; border-radius: 16px; padding: 24px; box-shadow: 0 2px 16px rgba(211,183,255,0.15);}
+    h1 { text-align: center; color: #8c8cff; margin-bottom: 16px; font-size: 1.8em; }
+    label { display:block; margin-top:10px; font-weight:500; }
+    input, select { width: 100%; padding:8px 12px; margin-top:5px; border-radius:8px; border:1px solid #ddd; font-size:1em; }
+    button { width:100%; padding:12px; margin-top:15px; background:#8c8cff; color:#fff; font-weight:600; border:none; border-radius:10px; cursor:pointer; transition:0.2s; }
+    button:hover { background:#6f6fdc; }
+    .result { margin-top:20px; padding:10px; background:#f2f2ff; border-radius:10px; }
+    canvas { max-width: 100%; margin-top:15px; }
+    table { width: 100%; border-collapse: collapse; margin-top:15px; }
+    th, td { border:1px solid #ddd; padding:6px; text-align:center; font-size:0.95em; }
+    th { background:#f0f0ff; }
+    .ads { margin: 20px auto; text-align:center; max-width:320px; }
   </style>
 </head>
 <body>
-  <!-- 광고 상단 -->
   <div class="ads">
     <ins class="adsbygoogle"
          style="display:block"
@@ -79,63 +31,40 @@
          data-ad-slot="8919515384"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </div>
 
   <div class="container">
-    <h1>초강력 복리 투자 계산기</h1>
+    <h1>주식 복리 계산기 💹</h1>
 
-    <label>초기 투자금 (원)</label>
-    <input type="number" id="principal" value="1000000">
+    <label for="initial">초기 투자금액</label>
+    <input type="number" id="initial" value="1000000" />
 
-    <label>투자 기간</label>
-    <input type="number" id="duration" value="12">
-    <select id="durationType">
+    <label for="monthly">월 투자금액 (선택)</label>
+    <input type="number" id="monthly" value="0" />
+
+    <label for="rate">수익률 (%)</label>
+    <input type="number" id="rate" value="10" />
+
+    <label for="period">투자 기간</label>
+    <input type="number" id="period" value="12" />
+
+    <label for="type">기간 단위</label>
+    <select id="type">
       <option value="월">월</option>
-      <option value="년">년</option>
+      <option value="년" selected>년</option>
     </select>
 
-    <label>월/연 수익률 선택</label>
-    <select id="rateType">
-      <option value="월">월 수익률</option>
-      <option value="연">연 수익률</option>
-    </select>
-
-    <label>목표 금액 (원)</label>
-    <input type="number" id="goal" value="2000000">
-
-    <label>주식 비율 (%)</label>
-    <input type="number" id="stockRatio" value="60">
-
-    <label>채권 비율 (%)</label>
-    <input type="number" id="bondRatio" value="30">
-
-    <label>현금 비율 (%)</label>
-    <input type="number" id="cashRatio" value="10">
-
-    <label>월 수익률 / 연 수익률 입력 (%)</label>
-    <input type="number" id="stockRate" value="2">
-    <input type="number" id="bondRate" value="1">
-    <input type="number" id="cashRate" value="0.2">
-
-    <label>리스크 ± (%)</label>
-    <input type="number" id="risk" value="5">
+    <label for="rebalance">리밸런싱 (%)</label>
+    <input type="number" id="rebalance" value="5" />
 
     <button onclick="calculate()">계산하기</button>
 
-    <div class="result" id="result">
-      <p>총액: -</p>
-      <p>총 수익: -</p>
-      <p>목표 달성 여부: -</p>
-      <p>연평균 수익률: -</p>
-    </div>
-
+    <div class="result" id="result"></div>
     <canvas id="chart"></canvas>
+    <div id="tableContainer"></div>
   </div>
 
-  <!-- 광고 하단 -->
   <div class="ads">
     <ins class="adsbygoogle"
          style="display:block"
@@ -143,87 +72,55 @@
          data-ad-slot="8919515384"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </div>
 
+  <!-- Chart.js 라이브러리 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     function calculate() {
-      const principal = parseFloat(document.getElementById('principal').value);
-      const duration = parseFloat(document.getElementById('duration').value);
-      const durationType = document.getElementById('durationType').value;
-      const rateType = document.getElementById('rateType').value;
-      const goal = parseFloat(document.getElementById('goal').value);
+      let initial = parseFloat(document.getElementById('initial').value);
+      let monthly = parseFloat(document.getElementById('monthly').value);
+      let rate = parseFloat(document.getElementById('rate').value)/100;
+      let period = parseFloat(document.getElementById('period').value);
+      let type = document.getElementById('type').value;
+      let rebalancePct = parseFloat(document.getElementById('rebalance').value)/100;
 
-      let stockRatio = parseFloat(document.getElementById('stockRatio').value)/100;
-      let bondRatio = parseFloat(document.getElementById('bondRatio').value)/100;
-      let cashRatio = parseFloat(document.getElementById('cashRatio').value)/100;
-      const stockRate = parseFloat(document.getElementById('stockRate').value)/100;
-      const bondRate = parseFloat(document.getElementById('bondRate').value)/100;
-      const cashRate = parseFloat(document.getElementById('cashRate').value)/100;
-      const risk = parseFloat(document.getElementById('risk').value)/100;
+      if(type==='년'){ rate = rate/12; period = period*12; }
 
-      // 기간을 월 단위로 변환
-      let months = durationType === "년" ? duration*12 : duration;
+      let balance = initial;
+      let history = [balance.toFixed(2)];
+      let tableRows = `<table><tr><th>기간</th><th>투자금</th><th>수익</th></tr>`;
+      
+      for(let i=1;i<=period;i++){
+        let prev = balance;
+        balance = balance*(1+rate) + monthly;
 
-      // 연 수익률이면 월 수익률로 변환
-      let stockR = rateType==="연"? Math.pow(1+stockRate,1/12)-1 : stockRate;
-      let bondR = rateType==="연"? Math.pow(1+bondRate,1/12)-1 : bondRate;
-      let cashR = rateType==="연"? Math.pow(1+cashRate,1/12)-1 : cashRate;
+        // 리밸런싱
+        let target = initial*(1+rate*i) + monthly*i;
+        let diff = balance - target;
+        if(Math.abs(diff)/target > rebalancePct){
+          balance = target;
+        }
 
-      let balanceArr = [];
-      let total = principal;
-
-      for(let i=0;i<months;i++){
-        // 리스크 랜덤 적용
-        let sr = stockR * (1 + (Math.random()*2-1)*risk);
-        let br = bondR * (1 + (Math.random()*2-1)*risk);
-        let cr = cashR * (1 + (Math.random()*2-1)*risk);
-
-        total = total*(1 + sr*stockRatio + br*bondRatio + cr*cashRatio);
-        balanceArr.push(Math.round(total));
+        history.push(balance.toFixed(2));
+        let gain = balance - prev;
+        tableRows += `<tr><td>${i}</td><td>${balance.toFixed(2)}</td><td>${gain.toFixed(2)}</td></tr>`;
       }
+      tableRows += `</table>`;
 
-      const totalAmount = balanceArr[balanceArr.length-1];
-      const totalProfit = totalAmount - principal;
-      const annualizedRate = Math.pow(totalAmount/principal,12/months)-1;
+      document.getElementById('result').innerHTML = `<strong>최종 투자금액:</strong> ${balance.toFixed(2)}원`;
+      document.getElementById('tableContainer').innerHTML = tableRows;
 
-      document.getElementById('result').innerHTML = `
-        <p>총액: ${totalAmount.toLocaleString()} 원</p>
-        <p>총 수익: ${totalProfit.toLocaleString()} 원</p>
-        <p>목표 달성 여부: ${totalAmount>=goal ? "달성 ✅" : "미달 ❌"}</p>
-        <p>연평균 수익률: ${(annualizedRate*100).toFixed(2)}%</p>
-      `;
-
-      // 그래프
       const ctx = document.getElementById('chart').getContext('2d');
       if(window.myChart) window.myChart.destroy();
       window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: balanceArr.map((_,i)=>i+1),
-          datasets: [{
-            label: '투자금 누적액',
-            data: balanceArr,
-            borderColor: '#8c8cff',
-            backgroundColor: 'rgba(140,140,255,0.2)',
-            fill: true,
-            tension: 0.2
-          }]
+          labels: history.map((_,i)=>i),
+          datasets:[{label:'투자금액 변화', data:history, borderColor:'#8c8cff', backgroundColor:'rgba(140,140,255,0.2)', fill:true }]
         },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: true },
-            tooltip: { mode: 'index', intersect: false }
-          },
-          scales: {
-            x: { title: { display: true, text: '월' } },
-            y: { title: { display: true, text: '원' }, beginAtZero: false }
-          }
-        }
+        options:{ responsive:true, plugins:{legend:{display:true}} }
       });
     }
   </script>
