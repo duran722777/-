@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>무료 주식 복리 계산기 | Quick Stock Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="무료 주식 복리 계산기: 초기 투자금, 월 투자금, 연 수익률 입력으로 10년 후 누적 자산과 그래프 시뮬레이션 가능! 빠르고 간편한 Quick Stock Calculator.">
+  <meta name="keywords" content="주식, 복리 계산기, 투자, 수익률, 월 적금, 자산 시뮬레이션, Quick Calculator, 주식 계산, 투자 계산기">
+  
+  <!-- 구글 애드센스 -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4634078773523032"
+     crossorigin="anonymous"></script>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    body { background: #fdf6fb; font-family: 'Segoe UI','Apple SD Gothic Neo',Arial,sans-serif; margin:0; padding:0; }
+    .container { max-width: 400px; margin: 20px auto; background: #fff7f0; border-radius: 16px; padding: 20px; box-shadow: 0 2px 16px rgba(211,183,255,0.15);}
+    h1 { text-align:center; color:#8c8cff; font-size:1.6em; margin-bottom:16px;}
+    label { display:block; margin:10px 0 4px; font-weight:500;}
+    input[type="number"] { width:100%; padding:8px; border-radius:8px; border:1px solid #e6cfff; }
+    button { width:100%; padding:12px; margin-top:12px; border:none; border-radius:10px; background:#8c8cff; color:white; font-size:1.1em; cursor:pointer;}
+    button:hover { background:#6f6fff; }
+    canvas { margin-top:20px; }
+    .ads { text-align:center; margin:20px auto; max-width:320px; }
+    p.notice { font-size:0.9em; color:#555; margin-top:8px; text-align:center;}
+  </style>
+</head>
+<body>
+  <!-- 광고: 상단 -->
+  <div class="ads">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-4634078773523032"
+         data-ad-slot="8919515384"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <div class="container">
+    <h1>무료 주식 복리 계산기</h1>
+    <p class="notice">초기 투자금, 월 투자금, 연 수익률 입력 후 누적 자산과 그래프 확인!</p>
+    
+    <label>초기 투자금 (원)</label>
+    <input type="number" id="initial" value="1000000">
+
+    <label>월 투자금 (원)</label>
+    <input type="number" id="monthly" value="100000">
+
+    <label>예상 연평균 수익률 (%)</label>
+    <input type="number" id="rate" value="8">
+
+    <label>투자 기간 (년)</label>
+    <input type="number" id="years" value="10">
+
+    <button onclick="calculateCompound()">계산하기</button>
+    
+    <canvas id="compoundChart"></canvas>
+  </div>
+
+  <!-- 광고: 하단 -->
+  <div class="ads">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-4634078773523032"
+         data-ad-slot="8919515384"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <script>
+    let chart;
+    function calculateCompound() {
+      const initial = parseFloat(document.getElementById('initial').value);
+      const monthly = parseFloat(document.getElementById('monthly').value);
+      const rate = parseFloat(document.getElementById('rate').value) / 100;
+      const years = parseInt(document.getElementById('years').value);
+
+      let data = [];
+      let labels = [];
+      let total = initial;
+
+      for(let i=1; i<=years; i++){
+        for(let m=1; m<=12; m++){
+          total += monthly;
+          total *= Math.pow(1 + rate/12, 1);
+        }
+        data.push(Math.round(total));
+        labels.push(i + "년");
+      }
+
+      if(chart) chart.destroy();
+
+      const ctx = document.getElementById('compoundChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '누적 자산 (원)',
+            data: data,
+            borderColor: '#8c8cff',
+            backgroundColor: 'rgba(140,140,255,0.2)',
+            tension: 0.3,
+            fill: true
+          }]
+        },
+        options: {
+          responsive:true,
+          plugins: { legend:{ display:true }, tooltip:{ mode:'index', intersect:false } },
+          scales: {
+            y: { beginAtZero:true, ticks:{ callback:function(value){ return value.toLocaleString()+'원'; } } }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
