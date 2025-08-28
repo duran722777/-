@@ -2,212 +2,183 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>리밸런싱 복리 계산기</title>
+  <title>리밸런싱 복리 주식 계산기 | Rebalancing Compound Stock Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- 구글 애드센스 광고 -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4634078773523032"
      crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body {
-      background: #f5f5f5;
-      font-family: 'Segoe UI', 'Apple SD Gothic Neo', Arial, sans-serif;
-      color: #333;
-    }
-    .container {
-      max-width: 400px;
-      margin: 40px auto;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #444;
-      margin-bottom: 20px;
-      font-size: 1.6em;
-      font-weight: 600;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      font-size: 1em;
-    }
-    button {
-      background: #4CAF50;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover { background: #45a049; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      font-size: 0.95em;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 6px;
-      text-align: center;
-    }
-    th {
-      background: #f0f0f0;
-      font-weight: 600;
-    }
-    .ads {
-      text-align: center;
-      margin: 20px auto;
-      max-width: 320px;
-    }
-    canvas {
-      margin-top: 20px;
-    }
+    body { background: #fdf6fb; font-family: 'Segoe UI','Apple SD Gothic Neo',Arial,sans-serif; margin:0; padding:0; }
+    .container { max-width: 800px; margin: 40px auto; padding: 20px; background:#fff7f0; border-radius: 16px; box-shadow:0 2px 16px rgba(211,183,255,0.15);}
+    h1 { text-align:center; color:#8c8cff; margin-bottom:20px; }
+    label { display:block; margin-top:10px; font-weight:bold; }
+    input, select { width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid #ccc; }
+    button { margin-top:15px; padding:10px; width:100%; font-weight:bold; border:none; border-radius:8px; background:#8c8cff; color:white; cursor:pointer;}
+    button:hover{ background:#6a6adf; }
+    table { width:100%; border-collapse: collapse; margin-top:20px; }
+    th, td { border:1px solid #ccc; padding:6px; text-align:center; }
+    th { background:#e6e6ff; }
+    .ads { text-align:center; margin:20px 0; }
+    #chartContainer { width:100%; height:400px; margin-top:20px; }
   </style>
 </head>
 <body>
-  <div class="ads">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-4634078773523032"
-         data-ad-slot="8919515384"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
-
   <div class="container">
-    <h1>리밸런싱 복리 계산기</h1>
-    <label>초기 투자금</label>
+    <h1>리밸런싱 복리 주식 계산기<br><span style="font-size:0.7em;">Rebalancing Compound Stock Calculator</span></h1>
+    
+    <!-- 광고 상단 -->
+    <div class="ads">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-4634078773523032"
+           data-ad-slot="8919515384"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    
+    <!-- 입력폼 -->
+    <label>초기 투자금 (Initial Investment)</label>
     <input type="number" id="initial" value="1000000">
-    
-    <label>기간 단위</label>
-    <select id="periodType">
-      <option value="month">월별</option>
-      <option value="year">연별</option>
-    </select>
-    
-    <label>기간 (개월/년)</label>
-    <input type="number" id="duration" value="12">
-    
-    <label>매달/연 투자 금액</label>
-    <input type="number" id="contribution" value="100000">
-    
-    <label>수익률 (%)</label>
-    <input type="number" id="rate" value="5">
-    
-    <label>리밸런싱 비율 (%)</label>
-    <input type="number" id="rebalanceRate" value="15">
-    
-    <button onclick="calculate()">계산하기</button>
 
+    <label>월/연 추가 투자금 (Monthly/Annual Investment)</label>
+    <input type="number" id="additional" value="0">
+
+    <label>투자 기간 (개월/년)</label>
+    <input type="number" id="period" value="12">
+
+    <label>기간 단위 (Time Unit)</label>
+    <select id="timeUnit">
+      <option value="month">개월 (Month)</option>
+      <option value="year">년 (Year)</option>
+    </select>
+
+    <label>수익률 (월/연) %</label>
+    <input type="number" id="rate" value="1">
+
+    <label>리밸런싱 비율 % (Rebalancing Ratio)</label>
+    <input type="number" id="rebalance" value="15">
+
+    <button onclick="calculate()">계산하기 / Calculate</button>
+
+    <!-- 결과 영역 -->
+    <h2>결과 / Results</h2>
+    <div id="resultSummary"></div>
+
+    <!-- 표 -->
     <table id="resultTable">
       <thead>
         <tr>
           <th>기간</th>
-          <th>리밸 전 주식</th>
-          <th>리밸 후 주식</th>
-          <th>현금</th>
-          <th>총 자산</th>
-          <th>매달/연 수익</th>
+          <th>총 투자금 / Total Invested</th>
+          <th>주식 평가금액 / Stock Value</th>
+          <th>현금 / Cash</th>
+          <th>총 자산 / Total Assets</th>
+          <th>이번달/연 수익 / Profit</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
 
-    <canvas id="chart" width="350" height="200"></canvas>
+    <!-- 그래프 -->
+    <canvas id="chartContainer"></canvas>
+
+    <!-- 광고 하단 -->
+    <div class="ads">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-4634078773523032"
+           data-ad-slot="8919515384"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
   </div>
 
-  <div class="ads">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-4634078773523032"
-         data-ad-slot="8919515384"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    function calculate() {
+      const initial = parseFloat(document.getElementById('initial').value);
+      const additional = parseFloat(document.getElementById('additional').value);
+      let period = parseInt(document.getElementById('period').value);
+      const timeUnit = document.getElementById('timeUnit').value;
+      let rate = parseFloat(document.getElementById('rate').value)/100;
+      const rebalanceRate = parseFloat(document.getElementById('rebalance').value)/100;
 
-<script>
-function calculate() {
-  const initial = parseFloat(document.getElementById('initial').value);
-  const duration = parseInt(document.getElementById('duration').value);
-  const contribution = parseFloat(document.getElementById('contribution').value);
-  const rate = parseFloat(document.getElementById('rate').value)/100;
-  const rebalanceRate = parseFloat(document.getElementById('rebalanceRate').value)/100;
-  const periodType = document.getElementById('periodType').value;
-  const tableBody = document.querySelector('#resultTable tbody');
-  tableBody.innerHTML = '';
-  
-  let stock = initial;
-  let cash = 0;
-  let total = initial;
-  let monthlyProfit = 0;
-  let labels = [];
-  let data = [];
-  
-  for (let i=1; i<=duration; i++) {
-    let preRebalanceStock = stock;
-
-    // 수익 적용
-    stock *= 1 + rate;
-
-    // 매달/연 투자
-    stock += contribution;
-
-    // 리밸런싱
-    let rebalanceAmount = stock * rebalanceRate;
-    stock -= rebalanceAmount;
-    cash += rebalanceAmount;
-
-    total = stock + cash;
-    monthlyProfit = total - (initial + contribution*i);
-
-    // 테이블 추가
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${i} ${periodType === 'month' ? '개월' : '년'}</td>
-      <td>${preRebalanceStock.toFixed(0)}</td>
-      <td>${stock.toFixed(0)}</td>
-      <td>${cash.toFixed(0)}</td>
-      <td>${total.toFixed(0)}</td>
-      <td>${monthlyProfit.toFixed(0)}</td>
-    `;
-    tableBody.appendChild(row);
-
-    labels.push(i);
-    data.push(total.toFixed(0));
-  }
-
-  // 차트 생성
-  const ctx = document.getElementById('chart').getContext('2d');
-  if (window.myChart) window.myChart.destroy();
-  window.myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: '총 자산(Total Assets)',
-        data: data,
-        borderColor: '#4CAF50',
-        fill: false,
-        tension: 0.2
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: true } },
-      scales: {
-        y: { beginAtZero: true }
+      if(timeUnit === 'year') {
+        rate /= 12; // 연 -> 월 변환
+        period *= 12;
       }
+
+      let invested = initial;
+      let stock = initial;
+      let cash = 0;
+      let resultHTML = "";
+      let tbody = "";
+      let labels = [];
+      let dataTotal = [];
+      let dataStock = [];
+      let dataCash = [];
+
+      for(let i=1;i<=period;i++){
+        // 주식 수익
+        let profit = stock * rate;
+        stock += profit;
+        // 추가 투자
+        stock += additional;
+        invested += additional;
+
+        // 리밸런싱
+        let rebalanceAmount = stock * rebalanceRate;
+        stock -= rebalanceAmount;
+        cash += rebalanceAmount;
+
+        let totalAssets = stock + cash;
+
+        // 표용 tbody
+        tbody += `<tr>
+          <td>${i}</td>
+          <td>${invested.toLocaleString()}</td>
+          <td>${stock.toLocaleString()}</td>
+          <td>${cash.toLocaleString()}</td>
+          <td>${totalAssets.toLocaleString()}</td>
+          <td>${profit.toLocaleString()}</td>
+        </tr>`;
+
+        labels.push(i);
+        dataTotal.push(totalAssets);
+        dataStock.push(stock);
+        dataCash.push(cash);
+      }
+
+      document.querySelector('#resultTable tbody').innerHTML = tbody;
+
+      // 요약
+      const finalTotal = stock + cash;
+      const cumulativeProfit = finalTotal - invested;
+      resultHTML = `<p>총 자산 / Total Assets: ${finalTotal.toLocaleString()}</p>
+                    <p>주식 총액 / Stock Value: ${stock.toLocaleString()}</p>
+                    <p>현금 / Cash: ${cash.toLocaleString()}</p>
+                    <p>총 투자금 / Total Invested: ${invested.toLocaleString()}</p>
+                    <p>누적 수익 / Cumulative Profit: ${cumulativeProfit.toLocaleString()}</p>`;
+      document.getElementById('resultSummary').innerHTML = resultHTML;
+
+      // 그래프
+      const ctx = document.getElementById('chartContainer').getContext('2d');
+      if(window.myChart) window.myChart.destroy();
+      window.myChart = new Chart(ctx,{
+        type:'line',
+        data:{
+          labels: labels,
+          datasets:[
+            {label:'총 자산 / Total Assets', data:dataTotal, borderColor:'#8c8cff', fill:false},
+            {label:'주식 평가금액 / Stock Value', data:dataStock, borderColor:'#52a7a7', fill:false},
+            {label:'현금 / Cash', data:dataCash, borderColor:'#c4636e', fill:false}
+          ]
+        },
+        options:{responsive:true, plugins:{legend:{position:'top'}}, scales:{y:{beginAtZero:true}}}
+      });
     }
-  });
-}
-</script>
+  </script>
 </body>
 </html>
