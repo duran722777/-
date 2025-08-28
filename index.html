@@ -2,33 +2,27 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>무료 주식 복리 계산기 | Quick Stock Calculator</title>
+  <title>Quick Stock Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="무료 주식 복리 계산기: 초기 투자금, 월 투자금, 연 수익률 입력으로 10년 후 누적 자산과 그래프 시뮬레이션 가능! 빠르고 간편한 Quick Stock Calculator.">
-  <meta name="keywords" content="주식, 복리 계산기, 투자, 수익률, 월 적금, 자산 시뮬레이션, Quick Calculator, 주식 계산, 투자 계산기">
-  
-  <!-- 구글 애드센스 -->
+  <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4634078773523032"
      crossorigin="anonymous"></script>
-  
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
   <style>
-    body { background: #fdf6fb; font-family: 'Segoe UI','Apple SD Gothic Neo',Arial,sans-serif; margin:0; padding:0; }
-    .container { max-width: 400px; margin: 20px auto; background: #fff7f0; border-radius: 16px; padding: 20px; box-shadow: 0 2px 16px rgba(211,183,255,0.15);}
-    h1 { text-align:center; color:#8c8cff; font-size:1.6em; margin-bottom:16px;}
-    label { display:block; margin:10px 0 4px; font-weight:500;}
-    input[type="number"] { width:100%; padding:8px; border-radius:8px; border:1px solid #e6cfff; }
-    button { width:100%; padding:12px; margin-top:12px; border:none; border-radius:10px; background:#8c8cff; color:white; font-size:1.1em; cursor:pointer;}
-    button:hover { background:#6f6fff; }
-    canvas { margin-top:20px; }
-    .ads { text-align:center; margin:20px auto; max-width:320px; }
-    p.notice { font-size:0.9em; color:#555; margin-top:8px; text-align:center;}
+    body { font-family:'Segoe UI','Apple SD Gothic Neo',Arial,sans-serif; background:#fdf6fb; margin:0; padding:0;}
+    .container { max-width: 400px; margin: 20px auto; padding:20px; background:#fff7f0; border-radius:16px; box-shadow:0 2px 16px rgba(211,183,255,0.15);}
+    h1 { text-align:center; color:#8c8cff; margin-bottom:16px;}
+    input, select { width: 100%; padding:8px; margin:6px 0; border-radius:8px; border:1px solid #e6cfff; box-sizing:border-box;}
+    button { width:100%; padding:12px; margin:6px 0; border:none; border-radius:8px; background:#8c8cff; color:white; cursor:pointer; font-weight:600; }
+    button:hover { filter:brightness(0.9);}
+    .ads { margin:20px auto; text-align:center; max-width:320px;}
+    canvas { width:100%; max-width:100%; margin-top:16px; }
+    .section { margin-bottom:20px; }
+    label { font-weight:500; display:block; margin-top:10px; }
   </style>
 </head>
 <body>
-  <!-- 광고: 상단 -->
+
+  <!-- 광고 상단 -->
   <div class="ads">
     <ins class="adsbygoogle"
          style="display:block"
@@ -36,31 +30,54 @@
          data-ad-slot="8919515384"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
   </div>
 
   <div class="container">
-    <h1>무료 주식 복리 계산기</h1>
-    <p class="notice">초기 투자금, 월 투자금, 연 수익률 입력 후 누적 자산과 그래프 확인!</p>
-    
-    <label>초기 투자금 (원)</label>
-    <input type="number" id="initial" value="1000000">
+    <h1>주식 복리 계산기</h1>
 
-    <label>월 투자금 (원)</label>
-    <input type="number" id="monthly" value="100000">
+    <div class="section">
+      <label>초기 투자금</label>
+      <input type="number" id="principal" placeholder="₩ 예: 1000000">
 
-    <label>예상 연평균 수익률 (%)</label>
-    <input type="number" id="rate" value="8">
+      <label>수익률</label>
+      <input type="number" id="rate" placeholder="% 예: 5">
 
-    <label>투자 기간 (년)</label>
-    <input type="number" id="years" value="10">
+      <label>수익률 단위</label>
+      <select id="rateType">
+        <option value="year">연평균</option>
+        <option value="month">월평균</option>
+      </select>
 
-    <button onclick="calculateCompound()">계산하기</button>
-    
-    <canvas id="compoundChart"></canvas>
+      <label>투자 기간</label>
+      <input type="number" id="period" placeholder="예: 12">
+
+      <select id="periodType">
+        <option value="year">년</option>
+        <option value="month">개월</option>
+      </select>
+
+      <label>목표 금액 (선택)</label>
+      <input type="number" id="goal" placeholder="₩ 목표금액">
+
+      <label>리스크 ±%</label>
+      <input type="number" id="risk" placeholder="예: 5">
+    </div>
+
+    <button onclick="calculate()">계산</button>
+
+    <div class="section">
+      <h3>결과</h3>
+      <div>예상 최종 금액: <span id="finalAmount">₩0</span></div>
+      <div>목표 달성 여부: <span id="goalStatus">-</span></div>
+    </div>
+
+    <canvas id="chart"></canvas>
   </div>
 
-  <!-- 광고: 하단 -->
+  <!-- 광고 하단 -->
   <div class="ads">
     <ins class="adsbygoogle"
          style="display:block"
@@ -68,52 +85,60 @@
          data-ad-slot="8919515384"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    let chart;
-    function calculateCompound() {
-      const initial = parseFloat(document.getElementById('initial').value);
-      const monthly = parseFloat(document.getElementById('monthly').value);
-      const rate = parseFloat(document.getElementById('rate').value) / 100;
-      const years = parseInt(document.getElementById('years').value);
+    function calculate() {
+      const P = parseFloat(document.getElementById('principal').value) || 0;
+      const rInput = parseFloat(document.getElementById('rate').value) || 0;
+      const rType = document.getElementById('rateType').value;
+      const periodInput = parseInt(document.getElementById('period').value) || 0;
+      const periodType = document.getElementById('periodType').value;
+      const goal = parseFloat(document.getElementById('goal').value) || 0;
+      const risk = parseFloat(document.getElementById('risk').value) || 0;
 
-      let data = [];
-      let labels = [];
-      let total = initial;
+      let periods, rate;
+      if(periodType==='year') periods = periodInput * 12;
+      else periods = periodInput;
 
-      for(let i=1; i<=years; i++){
-        for(let m=1; m<=12; m++){
-          total += monthly;
-          total *= Math.pow(1 + rate/12, 1);
-        }
-        data.push(Math.round(total));
-        labels.push(i + "년");
+      rate = rType==='year' ? rInput/12/100 : rInput/100;
+
+      let values = [];
+      let amount = P;
+
+      for(let i=0; i<periods; i++){
+        const fluctuation = (Math.random()*(risk*2)-risk)/100; 
+        amount = amount * (1+rate+fluctuation);
+        values.push(Math.round(amount));
       }
 
-      if(chart) chart.destroy();
+      document.getElementById('finalAmount').innerText = '₩'+Math.round(amount).toLocaleString();
+      if(goal>0) document.getElementById('goalStatus').innerText = amount>=goal?'달성!':'미달성';
 
-      const ctx = document.getElementById('compoundChart').getContext('2d');
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: '누적 자산 (원)',
-            data: data,
-            borderColor: '#8c8cff',
-            backgroundColor: 'rgba(140,140,255,0.2)',
-            tension: 0.3,
-            fill: true
+      // 그래프 그리기
+      const ctx = document.getElementById('chart').getContext('2d');
+      if(window.chartInstance) window.chartInstance.destroy();
+      window.chartInstance = new Chart(ctx,{
+        type:'line',
+        data:{
+          labels: values.map((v,i)=>i+1),
+          datasets:[{
+            label:'투자금 성장',
+            data: values,
+            borderColor:'#8c8cff',
+            fill:true,
+            backgroundColor:'rgba(140,140,255,0.2)',
+            tension:0.2
           }]
         },
-        options: {
+        options:{
           responsive:true,
-          plugins: { legend:{ display:true }, tooltip:{ mode:'index', intersect:false } },
-          scales: {
-            y: { beginAtZero:true, ticks:{ callback:function(value){ return value.toLocaleString()+'원'; } } }
-          }
+          plugins:{legend:{display:false}},
+          scales:{y:{beginAtZero:true}}
         }
       });
     }
